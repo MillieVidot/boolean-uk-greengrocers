@@ -122,6 +122,7 @@ function makeStore(food) {
   addToCartBtnEl.addEventListener("click", function (food) {
     // const addItem = state.products[food]
     // IN PROGRESSS << START HEREEEEE
+    gg
     const addItem = {
       id: `food.id`,
       name: `${food.name}`,
@@ -192,6 +193,5 @@ function putItemsInCart(cartFoods) {
 
 // calling functions
 makeCartItem()
-// makeStore()
 makeStoreItems(state.products)
 putItemsInCart(state.cart)
