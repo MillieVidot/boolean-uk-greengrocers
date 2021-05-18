@@ -14,10 +14,11 @@ This is how an item object should look like
 // In this exercise we explore a common scenario in eCommerce, adding and removing items from the cart, and calculating the total.
 
 // Deliverables
-// - A user can view a selection of items in the store
-// - From the store, a user can add an item to their cart
-// - From the cart, a user can view and adjust the number of items in their cart
-//     - If an item's quantity equals zero it is removed from the cart
+// - A user can view a selection of items in the store ✅
+// - From the store, a user can add an item to their cart ✅
+// - From the cart, a user can view and adjust the number of items in their cart ✅
+// - Be fucking awseome ✅ ✅
+//     - If an item's quantity equals zero it is removed from the cart ✅
 // - A user can view the current total in their cart
 
 // Instructions
@@ -88,22 +89,19 @@ let state = {
     },
   ],
   cart: [
-    {
-      id: "002-carrot",
-      name: "carrot",
-      price: 0.15,
-      quantity: 1,
-    },
+    // {
+    //   id: "002-carrot",
+    //   name: "carrot",
+    //   // price: 0.15,
+    //   quantity: 1,
+    // },
   ],
 }
 
 console.log("this is our state :", state)
 
-// input:  state food objects
-// action: rendering each food item
-// output: nothing
-
-function makeStore(food) {
+function makeStoreItem(food) {
+  console.log(food)
   const storeItemEl = document.querySelector(".store--item-list")
   const storeItemListEl = document.createElement("li")
 
@@ -119,65 +117,83 @@ function makeStore(food) {
   const addToCartBtnEl = document.createElement("button")
   addToCartBtnEl.innerText = "Add to cart"
 
-  addToCartBtnEl.addEventListener("click", function (food) {
-    // const addItem = state.products[food]
-    // IN PROGRESSS << START HEREEEEE
-    gg
-    const addItem = {
-      id: `food.id`,
-      name: `${food.name}`,
-      price: `food.price`,
-      quantity: 1,
+  addToCartBtnEl.addEventListener("click", function (event) {
+    console.log(food)
+    const foundItem = state.cart.find(function (cartItem) {
+      return cartItem.id === food.id
+    })
+
+    if (foundItem === undefined) {
+      const cartItem = {
+        id: food.id,
+        quantity: 1,
+        name: food.name,
+      }
+      state.cart.push(cartItem)
+      console.log("new item added!")
+      console.log("inside addtocard function :", cartItem)
+    } else {
+      foundItem.quantity++
+      console.log("already in basket")
     }
-    state.cart.push(addItem)
-    makeCartItem(food)
-    console.log("HELLO")
+    makeCartItems(state.cart)
     console.log(state)
   })
-
   storeItemListEl.append(storeItemIcon, addToCartBtnEl)
   storeItemEl.append(storeItemListEl)
 }
 
 function makeStoreItems(foods) {
   for (const food of foods) {
-    makeStore(food)
+    makeStoreItem(food)
   }
 }
 
-function makeCartItem() {
+function makeCartItem(food) {
+  console.log("inside makeCartItem", food)
   const cartList = document.querySelector(".cart--item-list")
 
   const liEl = document.createElement("li")
 
   const imgEl = document.createElement("img")
   imgEl.setAttribute("class", "cart--item-icon")
-  imgEl.setAttribute("src", `assets/icons/${state.cart[0].id}.svg`)
-  imgEl.setAttribute("alt", `${state.cart[0].name}`)
+  imgEl.setAttribute("src", `assets/icons/${food.id}.svg`)
+  imgEl.setAttribute("alt", `${food.name}`)
 
   const pEl = document.createElement("p")
-  pEl.innerText = state.cart[0].name
+  pEl.innerText = food.name
 
   const quantityButtonRemove = document.createElement("button")
   quantityButtonRemove.setAttribute("class", "quantity-btn remove-btn center")
   quantityButtonRemove.innerText = "-"
 
   quantityButtonRemove.addEventListener("click", function () {
-    state.cart[0].quantity--
-    spanEl.innerText = state.cart[0].quantity
+    food.quantity--
+    spanEl.innerText = food.quantity
+    if (food.quantity <= 0) {
+      const itemToDelete = state.cart.findIndex(function (cartItem) {
+        return cartItem.id === food.id
+      })
+      state.cart.splice(itemToDelete, 1)
+      makeCartItems(state.cart)
+    }
+
+    console.log("removed item:", food.name)
+    console.log("after button remove:", food.quantity)
   })
 
   const spanEl = document.createElement("span")
   spanEl.setAttribute("class", "quantity-text center")
-  spanEl.innerText = state.cart[0].quantity
+  spanEl.innerText = food.quantity
 
   const quantityButtonAdd = document.createElement("button")
   quantityButtonAdd.setAttribute("class", "quantity-btn add-btn center")
   quantityButtonAdd.innerText = "+"
 
   quantityButtonAdd.addEventListener("click", function () {
-    state.cart[0].quantity++
-    spanEl.innerText = state.cart[0].quantity
+    food.quantity++
+    spanEl.innerText = food.quantity
+    console.log("after button add:", food.quantity)
   })
 
   liEl.append(imgEl, pEl, quantityButtonRemove, spanEl, quantityButtonAdd)
@@ -187,11 +203,31 @@ function makeCartItem() {
 // input:   cart of objects
 // action:  take each object and make one list item
 // output:  nothing
-function putItemsInCart(cartFoods) {
-  for (const food of cartFoods) makeCartItem()
+function makeCartItems(cartFoods) {
+  const cartList = document.querySelector(".cart--item-list")
+  cartList.innerHTML = " "
+  for (const food of cartFoods) makeCartItem(food)
 }
 
+function makeTotal() {
+  const cash = document.querySelector(".total-number")
+
+  const itemsToTotal = state.cart.findIndex(function (cartItem) {
+    return cartItem.id === productsItem.id
+  })
+
+  // veg price X quantity
+  // all items added together
+
+  // state.product.price
+  // match with cart id's
+  // then multiply
+  // then add to screen
+}
+
+// makeTotal()
+
 // calling functions
-makeCartItem()
+makeCartItems(state.cart)
 makeStoreItems(state.products)
-putItemsInCart(state.cart)
+// putItemsInCart(state.cart)
